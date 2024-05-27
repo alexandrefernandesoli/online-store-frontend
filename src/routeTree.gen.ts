@@ -15,16 +15,20 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as AdminImport } from './routes/_admin'
+import { Route as LayoutIndexImport } from './routes/_layout/index'
 import { Route as LayoutRestrictImport } from './routes/_layout/restrict'
 import { Route as LayoutProductProductIdImport } from './routes/_layout/product.$productId'
 import { Route as AdminAdminLoginImport } from './routes/_admin/admin/login'
 import { Route as AdminAdminAuthenticatedImport } from './routes/_admin/admin/_authenticated'
 import { Route as AdminAdminAuthenticatedIndexImport } from './routes/_admin/admin/_authenticated/index'
+import { Route as AdminAdminAuthenticatedUsersImport } from './routes/_admin/admin/_authenticated/users'
+import { Route as AdminAdminAuthenticatedProductsIndexImport } from './routes/_admin/admin/_authenticated/products/index'
+import { Route as AdminAdminAuthenticatedProductsNewProductImport } from './routes/_admin/admin/_authenticated/products/new-product'
+import { Route as AdminAdminAuthenticatedProductsProductIdImport } from './routes/_admin/admin/_authenticated/products/product.$id'
 
 // Create Virtual Routes
 
 const AdminAdminImport = createFileRoute('/_admin/admin')()
-const LayoutIndexLazyImport = createFileRoute('/_layout/')()
 const LayoutProductsLazyImport = createFileRoute('/_layout/products')()
 const LayoutLoginLazyImport = createFileRoute('/_layout/login')()
 const LayoutBestSellersLazyImport = createFileRoute('/_layout/best-sellers')()
@@ -50,10 +54,10 @@ const AdminAdminRoute = AdminAdminImport.update({
   getParentRoute: () => AdminRoute,
 } as any)
 
-const LayoutIndexLazyRoute = LayoutIndexLazyImport.update({
+const LayoutIndexRoute = LayoutIndexImport.update({
   path: '/',
   getParentRoute: () => LayoutRoute,
-} as any).lazy(() => import('./routes/_layout/index.lazy').then((d) => d.Route))
+} as any)
 
 const LayoutProductsLazyRoute = LayoutProductsLazyImport.update({
   path: '/products',
@@ -112,6 +116,30 @@ const AdminAdminAuthenticatedIndexRoute =
     getParentRoute: () => AdminAdminAuthenticatedRoute,
   } as any)
 
+const AdminAdminAuthenticatedUsersRoute =
+  AdminAdminAuthenticatedUsersImport.update({
+    path: '/users',
+    getParentRoute: () => AdminAdminAuthenticatedRoute,
+  } as any)
+
+const AdminAdminAuthenticatedProductsIndexRoute =
+  AdminAdminAuthenticatedProductsIndexImport.update({
+    path: '/products/',
+    getParentRoute: () => AdminAdminAuthenticatedRoute,
+  } as any)
+
+const AdminAdminAuthenticatedProductsNewProductRoute =
+  AdminAdminAuthenticatedProductsNewProductImport.update({
+    path: '/products/new-product',
+    getParentRoute: () => AdminAdminAuthenticatedRoute,
+  } as any)
+
+const AdminAdminAuthenticatedProductsProductIdRoute =
+  AdminAdminAuthenticatedProductsProductIdImport.update({
+    path: '/products/product/$id',
+    getParentRoute: () => AdminAdminAuthenticatedRoute,
+  } as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -145,7 +173,7 @@ declare module '@tanstack/react-router' {
       parentRoute: typeof LayoutImport
     }
     '/_layout/': {
-      preLoaderRoute: typeof LayoutIndexLazyImport
+      preLoaderRoute: typeof LayoutIndexImport
       parentRoute: typeof LayoutImport
     }
     '/_admin/admin': {
@@ -168,8 +196,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutSearchSearchLazyImport
       parentRoute: typeof LayoutImport
     }
+    '/_admin/admin/_authenticated/users': {
+      preLoaderRoute: typeof AdminAdminAuthenticatedUsersImport
+      parentRoute: typeof AdminAdminAuthenticatedImport
+    }
     '/_admin/admin/_authenticated/': {
       preLoaderRoute: typeof AdminAdminAuthenticatedIndexImport
+      parentRoute: typeof AdminAdminAuthenticatedImport
+    }
+    '/_admin/admin/_authenticated/products/new-product': {
+      preLoaderRoute: typeof AdminAdminAuthenticatedProductsNewProductImport
+      parentRoute: typeof AdminAdminAuthenticatedImport
+    }
+    '/_admin/admin/_authenticated/products/': {
+      preLoaderRoute: typeof AdminAdminAuthenticatedProductsIndexImport
+      parentRoute: typeof AdminAdminAuthenticatedImport
+    }
+    '/_admin/admin/_authenticated/products/product/$id': {
+      preLoaderRoute: typeof AdminAdminAuthenticatedProductsProductIdImport
       parentRoute: typeof AdminAdminAuthenticatedImport
     }
   }
@@ -181,7 +225,11 @@ export const routeTree = rootRoute.addChildren([
   AdminRoute.addChildren([
     AdminAdminRoute.addChildren([
       AdminAdminAuthenticatedRoute.addChildren([
+        AdminAdminAuthenticatedUsersRoute,
         AdminAdminAuthenticatedIndexRoute,
+        AdminAdminAuthenticatedProductsNewProductRoute,
+        AdminAdminAuthenticatedProductsIndexRoute,
+        AdminAdminAuthenticatedProductsProductIdRoute,
       ]),
       AdminAdminLoginRoute,
     ]),
@@ -192,7 +240,7 @@ export const routeTree = rootRoute.addChildren([
     LayoutBestSellersLazyRoute,
     LayoutLoginLazyRoute,
     LayoutProductsLazyRoute,
-    LayoutIndexLazyRoute,
+    LayoutIndexRoute,
     LayoutProductProductIdRoute,
     LayoutSearchSearchLazyRoute,
   ]),
