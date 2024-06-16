@@ -21,21 +21,31 @@ function Product() {
 		productQueryOptions(Number.parseInt(productId)),
 	);
 
+	const createMarkup = (text: string | undefined) => {
+		if (!text) return { __html: '' };
+		// Replace line breaks with <br> and paragraphs with <p> tags
+		const htmlText = text
+			.split('\n\n').map(paragraph => `<p>${paragraph.replace(/\n/g, '<br/>')}</p>`)
+			.join('');
+
+		return { __html: htmlText };
+	}
+
 	return (
-		<div className="bg-gray-100">
+		<div className="bg-white">
 			<div className="flex px-24 py-12 gap-12">
-				<img src={product?.imageURL} alt={product?.name} className="w-80" />
+				<img src={product?.imageURL} alt={product?.name} className="w-80 h-full" />
 				<div className="flex flex-col flex-1">
-					<div className="text-gray-700 mb-4">{`Best Sellers -> Something -> Anything`}</div>
-					<h1 className="text-4xl mb-2">{product?.name}</h1>
-					<p>{product?.description}</p>
+					{/* <div className="text-gray-700 mb-4">{`Best Sellers -> Something -> Anything`}</div> */}
+					<h1 className="text-4xl mb-4">{product?.name}</h1>
+					<div className="text-ellipsis overflow-y-hidden text-sm" dangerouslySetInnerHTML={createMarkup(product?.description)}></div>
 
 					<div className="flex flex-col items-end justify-end h-full font-dosis">
 						<div className="line-through text-2xl">
-							DE: {Number(product?.price! / 100).toFixed(2)}
+							DE: {Number(product?.price).toFixed(2)}
 						</div>
 						<div className="font-bold text-3xl">
-							POR: {Number(product?.sale! / 100).toFixed(2)}
+							POR: {Number(product?.sale).toFixed(2)}
 						</div>
 						<Button
 							className="px-4 py-2 bg-red-500 hover:bg-red-600 transition text-white rounded-lg uppercase mt-2"

@@ -3,7 +3,6 @@ import { createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/_layout/restrict")({
 	component: () => (
 		<div className="w-full h-full flex items-center justify-center">
-			<img src="http://localhost:8080/products/download/40360767.jfif" alt="Teste" />
 			<iframe
 				width="560"
 				height="315"

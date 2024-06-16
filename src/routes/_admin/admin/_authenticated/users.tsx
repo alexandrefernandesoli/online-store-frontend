@@ -18,8 +18,6 @@ export const Route = createFileRoute("/_admin/admin/_authenticated/users")({
 function UsersListAdmin() {
 	const { data } = useQuery(usersQueryOptions);
 
-	console.log(data);
-
 	return (
 		<div className="flex flex-col gap-2 w-full">
 			<Breadcrumb>
@@ -48,7 +46,7 @@ function UsersListAdmin() {
 					{data?.map((user: any) => (
 						<TableRow key={user.id}>
 							<TableCell>{user.name}</TableCell>
-							<TableCell>{user.email}</TableCell>
+							<TableCell>{user.username}</TableCell>
 						</TableRow>
 					))}
 				</TableBody>

@@ -87,7 +87,7 @@ function Layout() {
 				</Link>
 			</div>
 			<Outlet />
-			<footer className="bg-gray-300 min-h-72">FOOTER</footer>
+			<footer className="bg-gray-300 min-h-72 text-4xl flex items-center justify-center">FOOTER</footer>
 		</>
 	);
 }

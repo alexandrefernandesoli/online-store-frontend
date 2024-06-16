@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
-import { useAdminAuth } from "../../../contexts/AdminAuthContext";
-import { router } from "../../../main";
+import { useAdminAuth } from "@/contexts/AdminAuthContext.tsx";
+import { router } from "@/main.tsx";
 
 export const Route = createFileRoute("/_admin/admin/login")({
 	component: () => <Login />,

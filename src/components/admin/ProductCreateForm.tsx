@@ -2,19 +2,25 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Controller, useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
-import { ProductForm, createProduct, editProduct } from "../../api/products";
+import { ProductForm, createProduct, editProduct, uploadProductImage } from "../../api/products";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { useState } from "react";
 import { router } from "@/main";
 
 export function ProductCreateForm({ product }: { product?: any }) {
-	const { handleSubmit, register, control, setValue } = useForm<ProductForm>({
-		values: { ...product, price: (product?.price / 100).toFixed(2), sale: (product?.sale / 100).toFixed(2) },
+	const { handleSubmit, register, control, setValue, watch } = useForm<ProductForm>({
+		values: { ...product, price: product?.price, sale: product?.sale },
 	});
+	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const queryClient = useQueryClient();
+	
+	const imageURL = watch("imageURL");
 
 	const handleSubmitAdd = async (data: ProductForm) => {
+		console.log({	data })
+
 		if (product) {
 			await editMutation.mutateAsync({ ...data, id: product.id });
 		} else {
@@ -47,6 +53,10 @@ export function ProductCreateForm({ product }: { product?: any }) {
 			console.error(error);
 		},
 	});
+
+	const numberOfRowsOnDescription = product?.description.split("\n").length + 3 || 1;
+
+	console.log({ numberOfRowsOnDescription })
 
 	return (
 		<form
@@ -106,14 +116,37 @@ export function ProductCreateForm({ product }: { product?: any }) {
 				/>
 			</label>
 
-			<label>
-				<span>Imagem</span>
-				<Input {...register("imageURL")} type="url" />
-			</label>
+				<label>
+					<span>Imagem</span>
+					<div className="flex items-center">
+						<Input type="file" onChange={(ev) => {
+							const file = ev.target.files?.[0];
+
+							if (!file) return;
+
+							setSelectedFile(file);
+						}} />
+						<Button
+							type="button"
+							onClick={async () => {
+								if (!selectedFile) return;
+
+								const data = await uploadProductImage(selectedFile);
+
+								if (!data) return;
+
+								setValue("imageURL", data.url);
+							}}
+						>
+							Upload
+						</Button>
+					</div>
+				</label>
+				{imageURL ? <span className="text-sm text-gray-500">Imagem atual: <a href={imageURL} target="_blank">{imageURL}</a></span> : null}
 
 			<label>
 				<span>Descrição</span>
-				<Textarea {...register("description")} />
+				<Textarea rows={numberOfRowsOnDescription} {...register("description")} />
 			</label>
 
 					<div className="flex justify-end gap-2">

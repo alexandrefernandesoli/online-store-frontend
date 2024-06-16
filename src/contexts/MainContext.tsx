@@ -10,6 +10,7 @@ type MainContextType = {
 	addToCart: (product: Product) => void;
 	removeFromCart: (product: Product) => void;
 	removeAllFromCart: (product: Product) => void;
+	setQuantity: (product: Product, quantity: number) => void;
 };
 
 const MainContext = createContext<MainContextType>({} as MainContextType);
@@ -22,6 +23,21 @@ export function MainContextProvider({
 	const [shoppingCart, setShoppingCart] = useState<ProductWithQuantity[]>(
 		[] as ProductWithQuantity[],
 	);
+
+	function setQuantity(product: Product, quantity: number) {
+		setShoppingCart((prev) => {
+			const productIndex = prev.findIndex((p) => p.id === product.id);
+
+			if (productIndex === -1) {
+				return prev;
+			}
+
+			const updatedCart = [...prev];
+			updatedCart[productIndex].quantity = quantity;
+
+			return updatedCart;
+		});
+	}
 
 	function addToCart(product: Product) {
 		setShoppingCart((prev) => {
@@ -98,6 +114,7 @@ export function MainContextProvider({
 				shoppingCart,
 				totalCartValue,
 				totalCartItems,
+				setQuantity,
 				addToCart,
 				removeFromCart,
 				removeAllFromCart,

@@ -25,7 +25,7 @@ const getUserData = async () => {
 	if (!token) return null;
 
 	try {
-		const { data } = await axios.get(`${API_URL}/users/me`, {
+		const { data } = await axios.get(`${API_URL}/auth/info`, {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
@@ -49,14 +49,13 @@ async function loginHandler({
 	const response = await axios.post(
 		`${API_URL}/auth/login`,
 		{
-			email,
+			usernameOrEmail: email,
 			password,
 		},
 	);
 
-	const { token, expires } = response.data;
-	localStorage.setItem("token", token);
-	localStorage.setItem("tokenExpires", expires);
+	const { accessToken } = response.data;
+	localStorage.setItem("token", accessToken);
 
 	return response.data;
 }
@@ -75,7 +74,6 @@ export function AdminAuthContextProvider({
 	const {
 		data: user,
 		isLoading,
-		isError,
 	} = useQuery({
 		queryKey: ["user"],
 		queryFn: getUserData,

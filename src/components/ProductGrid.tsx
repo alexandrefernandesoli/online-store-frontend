@@ -8,7 +8,12 @@ export function ProductGrid({ data }: { data: Product[] | undefined }) {
 		return Math.floor((1 - product.sale / product.price) * 100);
 	}
 
-	const { addToCart } = useMainContext();
+	const { addToCart, shoppingCart } = useMainContext();
+
+	const productQuantityOnCart = (product: Product) => {
+		const cartItem = shoppingCart.find((item) => item.id === product.id);
+		return cartItem ? cartItem.quantity : 0;
+	}
 
 	return (
 		<section className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 gap-y-12 p-8 items-center justify-items-center font-dosis">
@@ -28,12 +33,14 @@ export function ProductGrid({ data }: { data: Product[] | undefined }) {
 						<div className="text-sm text-gray-600 leading-none mb-1">
 							DE:{" "}
 							<span className="line-through">
-								R$ {Number(product.price / 100).toFixed(2)}
+								R$ {Number(product.price).toFixed(2)}
 							</span>
 						</div>
 						<span className="font-bold text-lg mr-1 leading-none">
-							POR: R$ {Number(product.sale / 100).toFixed(2)}{" "}
-							{calcProductDiscount(product)}% OFF
+							POR: R$ {Number(product.sale).toFixed(2)}{" "}
+							<span className="text-red-500 text-xs">
+								{calcProductDiscount(product)}% OFF
+							</span>
 						</span>
 					</div>
 					<Button
@@ -46,6 +53,7 @@ export function ProductGrid({ data }: { data: Product[] | undefined }) {
 					>
 						<i className="fas fa-cart-plus mr-1"></i>
 						Adicionar ao carrinho
+						{productQuantityOnCart(product) > 0 && ` (${productQuantityOnCart(product)})`}
 					</Button>
 				</Link>
 			))}

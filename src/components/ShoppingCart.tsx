@@ -1,6 +1,8 @@
+import { Link } from "@tanstack/react-router";
 import { Minus, Plus, ShoppingCartIcon } from "lucide-react";
 import { useMainContext } from "../contexts/MainContext";
-import { SheetContent, SheetHeader, SheetTitle } from "./ui/sheet";
+import { Button } from "./ui/button";
+import { SheetClose, SheetContent, SheetHeader, SheetTitle } from "./ui/sheet";
 
 export function ShoppingCart() {
 	const {
@@ -22,7 +24,7 @@ export function ShoppingCart() {
 				</SheetTitle>
 			</SheetHeader>
 
-			<div className="flex flex-col mt-4 flex-1">
+			<div className="flex flex-col mt-4 flex-1 max-h-[90%] overflow-y-auto">
 				{shoppingCart.map((product, i) => (
 					<div key={i}>
 						<div className="flex gap-2">
@@ -55,9 +57,11 @@ export function ShoppingCart() {
 				))}
 			</div>
 
-			<button className="w-full bg-red-500 text-white font-semibold px-4 py-2 rounded-lg flex justify-between">
-				Finalizar Compra <span>R$ {totalCartValue.toFixed(2)}</span>
-			</button>
+			<SheetClose asChild>
+				<Button asChild className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg flex justify-between">
+					<Link to={'/cart'}>Finalizar Compra <span>R$ {totalCartValue.toFixed(2)}</span></Link>
+				</Button>
+			</SheetClose>
 		</SheetContent>
 	);
 }

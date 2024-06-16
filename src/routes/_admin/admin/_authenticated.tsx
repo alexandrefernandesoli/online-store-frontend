@@ -1,10 +1,15 @@
 import { Link, Outlet, createFileRoute, redirect } from "@tanstack/react-router";
-import { BoxIcon, HomeIcon, UsersIcon } from "lucide-react";
-import { Button } from "../../../components/ui/button";
-import { useAdminAuth } from "../../../contexts/AdminAuthContext";
+import { HomeIcon, PackageIcon, ScrollIcon, UsersIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
 
 export const Route = createFileRoute("/_admin/admin/_authenticated")({
 	beforeLoad: async ({ context }) => {
+		if (context.auth?.user === undefined) {
+			console.log('user is undefined');
+			return;
+		}
+
 		if (!context.auth?.user) {
 			console.log('no user');
 			throw redirect({
@@ -50,8 +55,14 @@ function AdminLayout () {
 							<Link to="/admin/products" className="flex justify-center items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-gray-300" activeProps={{
 								className: "text-green-600"
 							}}>
-								<BoxIcon />
+								<PackageIcon />
 								Produtos
+							</Link>
+							<Link to="/admin/orders" className="flex justify-center items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-gray-300" activeProps={{
+								className: "text-green-600"
+							}}>
+								<ScrollIcon />
+								Pedidos
 							</Link>
 				</nav>
 				<div className="flex flex-1 p-4">

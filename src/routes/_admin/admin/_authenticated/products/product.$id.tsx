@@ -38,7 +38,7 @@ function ProductAdmin() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Produt adasdaso</BreadcrumbPage>
+              <BreadcrumbPage>Produto #{product?.id}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { bestSellersQueryOptions } from "../../api/products";
+import { productPublicQueryOptions } from "../../api/products";
 import { ProductGrid } from "../../components/ProductGrid";
 
 export const Route = createFileRoute("/_layout/best-sellers")({
@@ -8,7 +8,7 @@ export const Route = createFileRoute("/_layout/best-sellers")({
 });
 
 function BestSellers() {
-	const { data } = useQuery(bestSellersQueryOptions);
+	const { data } = useQuery(productPublicQueryOptions);
 
 	return (
 		<>

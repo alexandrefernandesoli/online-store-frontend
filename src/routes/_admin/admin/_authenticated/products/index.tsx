@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { format } from "date-fns";
 import { useState } from "react";
 import { deleteProduct, productsQueryOptions } from "@/api/products";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
@@ -14,19 +13,11 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { router } from "@/main";
+import { formatMoney, formatDate } from "@/lib/utils";
 
 export const Route = createFileRoute("/_admin/admin/_authenticated/products/")({
 	component: () => <Products />,
 });
-
-const formatDate = (date: string) => {
-	return date ? format(new Date(date), "dd/MM/yyyy HH:mm:ss") : "-";
-}
-
-const formatMoney = (value: number) =>
-	new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(
-		value / 100,
-	);
 
 function Products() {
 	const [page, setPage] = useState(1);

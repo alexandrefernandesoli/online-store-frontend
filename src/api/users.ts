@@ -3,7 +3,7 @@ import { API_URL } from "../constants/main";
 import { keepPreviousData, queryOptions } from "@tanstack/react-query";
 
 export const fetchUsers = async () => {
-	const url = new URL(`${API_URL}/users/list`);
+	const url = new URL(`${API_URL}/admin/users`);
 
 	const users = await axios
 		.get(url.toString(), {
@@ -17,7 +17,7 @@ export const fetchUsers = async () => {
 			return [];
 		});
 
-	return users;
+	return users.content;
 };
 
 export const usersQueryOptions = queryOptions({

@@ -1,6 +1,7 @@
-import { keepPreviousData, queryOptions } from "@tanstack/react-query";
+import {keepPreviousData, queryOptions} from "@tanstack/react-query";
 import axios from "axios";
-import { API_URL } from "../constants/main";
+import {API_URL} from "../constants/main";
+import {axiosInstance} from "@/api/axios.ts";
 
 type Result = {
 	results: Product[];
@@ -32,116 +33,81 @@ export type ProductForm = {
 	imageURL: string;
 };
 
-export const fetchProducts = async (page: number, sort = "product_id desc") => {
-	const url = new URL(`${API_URL}/products`);
-
-	url.search = new URLSearchParams({
-		page: page.toString(),
-		limit: "15",
-		sort: sort,
-		order: 'desc'
-	}).toString();
-	const products = await axios
-		.get<Result>(url.toString())
+export const fetchPublicProducts = async () => {
+	return await axiosInstance
+		.get<Product[]>('/public/products')
 		.then((r) => r.data)
-		.catch((e) => {
-			console.error(e);
-			return { results: [], page: 1, total: 0, pages: 1, limit: 10 };
-		});
+}
 
-	return products;
+export const fetchProducts = async (page: number) => {
+	return await axiosInstance
+		.get<Result>(`/admin/products?page=${page}&limit=10&order=desc`)
+		.then((r) => r.data)
 };
 
 export const fetchProductsByCategory = async (category: string) => {
 	const url = new URL(`${API_URL}/products/category/${category}`);
-	const products = await axios
+	return await axios
 		.get<Product[]>(url.toString())
 		.then((r) => r.data)
 		.catch((e) => {
 			console.error(e);
 			return [];
 		});
-
-	return products;
 };
 
 export const fetchProduct = async (product_id: number) => {
-	const url = new URL(`${API_URL}/products/${product_id}`);
-	const product = await axios
-		.get<Product>(url.toString())
-		.then((r) => r.data)
-		.catch((e) => {
-			console.error(e);
-			return null;
-		});
-
-	return product;
+	return await axiosInstance
+	.get<Product>(`/public/products/${product_id}`)
+	.then((r) => r.data)
 };
 
 export const fetchBestSellers = async () => {
 	const url = new URL(`${API_URL}/products/best-sellers`);
-	const products = await axios
+	return await axios
 		.get<Product[]>(url.toString())
 		.then((r) => r.data)
 		.catch((e) => {
 			console.error(e);
 			return [];
 		});
-
-	return products;
 };
 
 export const fetchProductSearch = async (search: string) => {
-	const url = new URL(`${API_URL}/products/search/${search}`);
-	const products = await axios
-		.get<Product[]>(url.toString())
-		.then((r) => r.data)
-		.catch((e) => {
-			console.error(e);
-			return [];
-		});
-
-	return products;
+	return await axiosInstance
+	.get<Product[]>(`/public/products/search/${search}`)
+	.then((r) => r.data)
 };
 
-export const createProduct = async (data: ProductForm) => {
-	const url = new URL(`${API_URL}/products`);
-	const response = await axios
-		.post<Product>(url.toString(), data)
-		.catch((e) => {
-			console.error(e);
-			return null;
-		});
+export const uploadProductImage = async (file: File): Promise<{ url: string } | null> => {
+	const formData = new FormData();
+	formData.append("file", file);
 
-	return response;
+	return await axiosInstance
+		.post<{ url: string }>('/admin/products/upload', formData, {
+			headers: {
+				"Content-Type": "multipart/form-data",
+			},
+		})
+		.then((r) => r.data)
+}
+
+export const createProduct = async (data: ProductForm) => {
+	return await axiosInstance.post<Product>('/admin/products', data);
 };
 
 export const editProduct = async (data: ProductForm & { id: number }) => {
-	const url = new URL(`${API_URL}/products/${data.id}`);
-	const response = await axios
-		.put<Product>(url.toString(), data)
-		.catch((e) => {
-			console.error(e);
-			return null;
-		});
-
-	return response;
+	return await axiosInstance.put<Product>(`/admin/products/${data.id}`, data);
 };
 
 export const deleteProduct = async (product_id: number) => {
-	const url = new URL(`${API_URL}/products/${product_id}`);
-	const response = await axios.delete(url.toString()).catch((e) => {
-		console.error(e);
-		return null;
-	});
-
-	return response;
+	return await axiosInstance.delete(`/admin/products/${product_id}`);
 };
 
-export const productsQueryOptions = (page: number, sort = "id") =>
+export const productsQueryOptions = (page: number) =>
 	queryOptions({
-		queryKey: ["products", page, sort],
-		queryFn: () => fetchProducts(page, sort),
+		queryKey: ["products", page],
+		queryFn: () => fetchProducts(page),
 		placeholderData: keepPreviousData,
 	});
 
@@ -155,6 +121,12 @@ export const productQueryOptions = (product_id: number) =>
 export const bestSellersQueryOptions = queryOptions({
 	queryKey: ["best-sellers"],
 	queryFn: fetchBestSellers,
+	placeholderData: keepPreviousData,
+});
+
+export const productPublicQueryOptions = queryOptions({
+	queryKey: ["public-products"],
+	queryFn: fetchPublicProducts,
 	placeholderData: keepPreviousData,
 });
 

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { productsQueryOptions } from "../../api/products";
+import { productPublicQueryOptions } from "@/api/products.ts";
 import { ProductGrid } from "../../components/ProductGrid";
 import {
 	Carousel,
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_layout/")({
 });
 
 function Home() {
-	const { data } = useQuery(productsQueryOptions(1, "id"));
+	const { data } = useQuery(productPublicQueryOptions)
 	
 	return (
 		<>
@@ -33,7 +33,7 @@ function Home() {
 				<CarouselPrevious className="absolute z-20 w-24 h-full left-0 bg-transparent border-0 hover:bg-transparent" />
 			</Carousel>
 			<div className="px-12">
-				<ProductGrid data={data?.results} />
+				<ProductGrid data={data} />
 			</div>
 		</>
 	);
