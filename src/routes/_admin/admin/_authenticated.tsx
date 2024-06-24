@@ -1,30 +1,41 @@
 import { Link, Outlet, createFileRoute, redirect } from "@tanstack/react-router";
-import { HomeIcon, PackageIcon, ScrollIcon, UsersIcon } from "lucide-react";
+import { HomeIcon, PackageIcon, ScrollIcon, Users2Icon, UsersIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useAdminAuth } from "@/contexts/AdminAuthContext";
+import { userDataQueryOptions } from "@/api/user";
+import { router } from "@/main";
 
 export const Route = createFileRoute("/_admin/admin/_authenticated")({
-	beforeLoad: async ({ context }) => {
-		if (context.auth?.user === undefined) {
-			console.log('user is undefined');
-			return;
-		}
+	beforeLoad: async ({ context: { queryClient } }) => {
 
-		if (!context.auth?.user) {
-			console.log('no user');
+		const user = await queryClient.fetchQuery(userDataQueryOptions)
+
+		console.log({ user });
+
+		if (!user) {
+			console.log('no user')
 			throw redirect({
 				to: "/admin/login",
 				search: {
 					redirect: location.pathname,
 				},
 			});
-		}
+		} 
+
+		return { user }
 	},
+	staleTime: 10_000,
 	component: () => <AdminLayout />,
 });
 
 function AdminLayout () {
-	const { user, logout } = useAdminAuth();
+	const { user, queryClient } = Route.useRouteContext();
+
+	const handleLogout = async () => {
+		localStorage.removeItem("token");
+		localStorage.removeItem("tokenExpires");
+		queryClient.setQueryData(['user'], null);
+		router.invalidate();
+	}
 
 	return (<div className="flex-1 flex flex-col">
 			<header className="bg-slate-200 p-4">
@@ -32,7 +43,7 @@ function AdminLayout () {
 					<h1 className="text-xl">Painel de Administração</h1>
 					<div className="flex gap-4 items-center">
 					{user?.name}
-						<Button onClick={logout}>Logout</Button>
+						<Button onClick={handleLogout}>Logout</Button>
 					</div>
 				</div>
 			</header>
@@ -51,6 +62,12 @@ function AdminLayout () {
 							}}>
 								<UsersIcon />
 								Usuários
+							</Link>
+							<Link to="/admin/clients" className="flex justify-center items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-gray-300" activeProps={{
+								className: "text-green-600"
+							}}>
+								<Users2Icon />
+								Clientes
 							</Link>
 							<Link to="/admin/products" className="flex justify-center items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-gray-300" activeProps={{
 								className: "text-green-600"

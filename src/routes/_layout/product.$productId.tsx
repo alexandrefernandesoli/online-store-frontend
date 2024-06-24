@@ -34,7 +34,7 @@ function Product() {
 	return (
 		<div className="bg-white">
 			<div className="flex px-24 py-12 gap-12">
-				<img src={product?.imageURL} alt={product?.name} className="w-80 h-full" />
+				<img src={"/" + product?.imageURL} alt={product?.name} className="w-80 h-full" />
 				<div className="flex flex-col flex-1">
 					{/* <div className="text-gray-700 mb-4">{`Best Sellers -> Something -> Anything`}</div> */}
 					<h1 className="text-4xl mb-4">{product?.name}</h1>

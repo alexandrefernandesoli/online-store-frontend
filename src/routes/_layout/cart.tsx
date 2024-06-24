@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { useMainContext } from '@/contexts/MainContext'
 import { createFileRoute } from '@tanstack/react-router'
 import { formatMoney } from '@/lib/utils';
+import { OrderCreation, createOrder } from '@/api/orders';
 
 export const Route = createFileRoute('/_layout/cart')({
   component: () => <Cart />
@@ -10,6 +11,16 @@ export const Route = createFileRoute('/_layout/cart')({
 
 function Cart() {
   const { shoppingCart, totalCartValue, setQuantity  } = useMainContext();
+
+  const handleCreateOrder = async () => {
+    const order: OrderCreation = {
+      products: shoppingCart.map(product => ({ productId: product.id, quantity: product.quantity }))
+    }
+
+    const response = await createOrder(order);
+
+    console.log({ response });
+  }
 
   return (
     <div className='flex flex-1 gap-2 px-8 py-8'>
@@ -35,7 +46,7 @@ function Cart() {
 
       <div className='flex flex-col gap-4 px-4'>
         <div className='flex text-lg'>Total: {formatMoney(totalCartValue)}</div>
-        <Button className='bg-amber-200 hover:bg-amber-300 text-black shadow-lg'> 
+        <Button className='bg-amber-200 hover:bg-amber-300 text-black shadow-lg' onClick={() => handleCreateOrder()}> 
           Fechar pedido
         </Button>
       </div>

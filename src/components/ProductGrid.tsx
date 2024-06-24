@@ -24,9 +24,9 @@ export function ProductGrid({ data }: { data: Product[] | undefined }) {
 					to={`/product/${product.id}`}
 				>
 					<img
-						src={product.imageURL}
+						src={"/" + product.imageURL}
 						alt={product.name}
-						className="w-48 min-h-48 object-cover"
+						className="w-48 h-96 object-cover"
 					/>
 					<h3 className="font-bold text-center uppercase">{product.name}</h3>
 					<div className="text-center leading-none">

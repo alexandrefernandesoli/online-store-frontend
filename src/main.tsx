@@ -2,10 +2,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { Suspense } from "react";
 import ReactDOM from "react-dom/client";
-import {
-	AdminAuthContextProvider,
-	useAdminAuth,
-} from "./contexts/AdminAuthContext";
 import { MainContextProvider } from "./contexts/MainContext";
 import { routeTree } from "./routeTree.gen";
 
@@ -34,11 +30,9 @@ declare module "@tanstack/react-router" {
 const rootElement = document.getElementById("app")!;
 
 function Router() {
-	const auth = useAdminAuth();
-
 	return (
-		<Suspense fallback={<div>Loading...</div>}>
-			<RouterProvider router={router} context={{ auth }} />
+		<Suspense fallback={<div className="w-full h-full bg-gray-800">Loading...</div>}>
+			<RouterProvider router={router} />
 		</Suspense>
 	);
 }
@@ -47,11 +41,9 @@ if (!rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement);
 	root.render(
 		<QueryClientProvider client={queryClient}>
-			<AdminAuthContextProvider>
-				<MainContextProvider>
-					<Router />
-				</MainContextProvider>
-			</AdminAuthContextProvider>
+			<MainContextProvider>
+				<Router />
+			</MainContextProvider>
 		</QueryClientProvider>,
 	);
 }

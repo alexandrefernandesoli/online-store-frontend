@@ -1,7 +1,7 @@
 import {keepPreviousData, queryOptions} from "@tanstack/react-query";
 import axios from "axios";
 import {API_URL} from "../constants/main";
-import {axiosInstance} from "@/api/axios.ts";
+import {axiosInstance, axiosPublicInstance } from "@/api/axios.ts";
 
 type Result = {
 	results: Product[];
@@ -34,7 +34,7 @@ export type ProductForm = {
 };
 
 export const fetchPublicProducts = async () => {
-	return await axiosInstance
+	return await axiosPublicInstance
 		.get<Product[]>('/public/products')
 		.then((r) => r.data)
 }
@@ -57,7 +57,7 @@ export const fetchProductsByCategory = async (category: string) => {
 };
 
 export const fetchProduct = async (product_id: number) => {
-	return await axiosInstance
+	return await axiosPublicInstance
 	.get<Product>(`/public/products/${product_id}`)
 	.then((r) => r.data)
 };
@@ -74,7 +74,7 @@ export const fetchBestSellers = async () => {
 };
 
 export const fetchProductSearch = async (search: string) => {
-	return await axiosInstance
+	return await axiosPublicInstance
 	.get<Product[]>(`/public/products/search/${search}`)
 	.then((r) => r.data)
 };

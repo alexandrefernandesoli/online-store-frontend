@@ -1,31 +1,30 @@
-import { listOrdersQueryOptions } from "@/api/orders";
+import { listClientsQueryOptions } from "@/api/clients";
 import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
-import { formatDate, formatMoney } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_admin/admin/_authenticated/orders/")({
-  component: () => <Orders />,
+export const Route = createFileRoute("/_admin/admin/_authenticated/clients/")({
+  component: () => <Clients />,
 });
 
-function Orders() {
-  const { data, isLoading } = useQuery(listOrdersQueryOptions);
+function Clients() {
+  const { data, isLoading } = useQuery(listClientsQueryOptions);
 
   return (
     <div className="flex flex-col gap-2 w-full">
@@ -39,14 +38,10 @@ function Orders() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Pedidos</BreadcrumbPage>
+              <BreadcrumbPage>Clientes</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-
-        <Button asChild>
-          <Link to={"/admin/products/new-product"}>Adicionar</Link>
-        </Button>
       </div>
 
       <div className="bg-gray-100 rounded p-2">
@@ -54,9 +49,8 @@ function Orders() {
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
+              <TableHead>Nome</TableHead>
               <TableHead>Email do Cliente</TableHead>
-              <TableHead>Total</TableHead>
-              <TableHead>Produtos</TableHead>
               <TableHead>Adicionado em</TableHead>
               <TableHead>Atualizado em</TableHead>
             </TableRow>
@@ -74,14 +68,15 @@ function Orders() {
                   </TableRow>
                 ))
               : data && data.length > 0
-                ? data.map((order, index) => (
-                    <TableRow key={`order-${order.id}-${index}`}>
-                      <TableCell>{order.id}</TableCell>
-                      <TableCell>{order.clientEmail}</TableCell>
-                      <TableCell>{formatMoney(order.total)}</TableCell>
-                      <TableCell>{JSON.stringify(order.products)}</TableCell>
-                      <TableCell>{formatDate(order.createdAt)}</TableCell>
-                      <TableCell>{formatDate(order.updatedAt)}</TableCell>
+                ? data.map((client, index) => (
+                    <TableRow key={`order-${client.id}-${index}`}>
+                      <TableCell>{client.id}</TableCell>
+                      <TableCell>
+                        {client.firstName + " " + client.lastName}
+                      </TableCell>
+                      <TableCell>{client.email}</TableCell>
+                      <TableCell>{formatDate(client.createdAt)}</TableCell>
+                      <TableCell>{formatDate(client.updatedAt)}</TableCell>
                     </TableRow>
                   ))
                 : null}

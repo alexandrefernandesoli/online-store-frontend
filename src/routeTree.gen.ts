@@ -17,22 +17,26 @@ import { Route as LayoutImport } from './routes/_layout'
 import { Route as AdminImport } from './routes/_admin'
 import { Route as LayoutIndexImport } from './routes/_layout/index'
 import { Route as LayoutRestrictImport } from './routes/_layout/restrict'
+import { Route as LayoutLoginImport } from './routes/_layout/login'
 import { Route as LayoutCartImport } from './routes/_layout/cart'
+import { Route as LayoutClientImport } from './routes/_layout/_client'
 import { Route as LayoutProductProductIdImport } from './routes/_layout/product.$productId'
 import { Route as AdminAdminLoginImport } from './routes/_admin/admin/login'
 import { Route as AdminAdminAuthenticatedImport } from './routes/_admin/admin/_authenticated'
+import { Route as LayoutClientClientIndexImport } from './routes/_layout/_client/client/index'
 import { Route as AdminAdminAuthenticatedIndexImport } from './routes/_admin/admin/_authenticated/index'
 import { Route as AdminAdminAuthenticatedUsersImport } from './routes/_admin/admin/_authenticated/users'
 import { Route as AdminAdminAuthenticatedProductsIndexImport } from './routes/_admin/admin/_authenticated/products/index'
 import { Route as AdminAdminAuthenticatedOrdersIndexImport } from './routes/_admin/admin/_authenticated/orders/index'
+import { Route as AdminAdminAuthenticatedClientsIndexImport } from './routes/_admin/admin/_authenticated/clients/index'
 import { Route as AdminAdminAuthenticatedProductsNewProductImport } from './routes/_admin/admin/_authenticated/products/new-product'
 import { Route as AdminAdminAuthenticatedProductsProductIdImport } from './routes/_admin/admin/_authenticated/products/product.$id'
 
 // Create Virtual Routes
 
 const AdminAdminImport = createFileRoute('/_admin/admin')()
+const LayoutRegisterLazyImport = createFileRoute('/_layout/register')()
 const LayoutProductsLazyImport = createFileRoute('/_layout/products')()
-const LayoutLoginLazyImport = createFileRoute('/_layout/login')()
 const LayoutBestSellersLazyImport = createFileRoute('/_layout/best-sellers')()
 const LayoutAboutLazyImport = createFileRoute('/_layout/about')()
 const LayoutSearchSearchLazyImport = createFileRoute(
@@ -61,17 +65,19 @@ const LayoutIndexRoute = LayoutIndexImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
+const LayoutRegisterLazyRoute = LayoutRegisterLazyImport.update({
+  path: '/register',
+  getParentRoute: () => LayoutRoute,
+} as any).lazy(() =>
+  import('./routes/_layout/register.lazy').then((d) => d.Route),
+)
+
 const LayoutProductsLazyRoute = LayoutProductsLazyImport.update({
   path: '/products',
   getParentRoute: () => LayoutRoute,
 } as any).lazy(() =>
   import('./routes/_layout/products.lazy').then((d) => d.Route),
 )
-
-const LayoutLoginLazyRoute = LayoutLoginLazyImport.update({
-  path: '/login',
-  getParentRoute: () => LayoutRoute,
-} as any).lazy(() => import('./routes/_layout/login.lazy').then((d) => d.Route))
 
 const LayoutBestSellersLazyRoute = LayoutBestSellersLazyImport.update({
   path: '/best-sellers',
@@ -90,8 +96,18 @@ const LayoutRestrictRoute = LayoutRestrictImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
+const LayoutLoginRoute = LayoutLoginImport.update({
+  path: '/login',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
 const LayoutCartRoute = LayoutCartImport.update({
   path: '/cart',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
+const LayoutClientRoute = LayoutClientImport.update({
+  id: '/_client',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -117,6 +133,11 @@ const AdminAdminAuthenticatedRoute = AdminAdminAuthenticatedImport.update({
   getParentRoute: () => AdminAdminRoute,
 } as any)
 
+const LayoutClientClientIndexRoute = LayoutClientClientIndexImport.update({
+  path: '/client/',
+  getParentRoute: () => LayoutClientRoute,
+} as any)
+
 const AdminAdminAuthenticatedIndexRoute =
   AdminAdminAuthenticatedIndexImport.update({
     path: '/',
@@ -138,6 +159,12 @@ const AdminAdminAuthenticatedProductsIndexRoute =
 const AdminAdminAuthenticatedOrdersIndexRoute =
   AdminAdminAuthenticatedOrdersIndexImport.update({
     path: '/orders/',
+    getParentRoute: () => AdminAdminAuthenticatedRoute,
+  } as any)
+
+const AdminAdminAuthenticatedClientsIndexRoute =
+  AdminAdminAuthenticatedClientsIndexImport.update({
+    path: '/clients/',
     getParentRoute: () => AdminAdminAuthenticatedRoute,
   } as any)
 
@@ -165,8 +192,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutImport
       parentRoute: typeof rootRoute
     }
+    '/_layout/_client': {
+      preLoaderRoute: typeof LayoutClientImport
+      parentRoute: typeof LayoutImport
+    }
     '/_layout/cart': {
       preLoaderRoute: typeof LayoutCartImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/login': {
+      preLoaderRoute: typeof LayoutLoginImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/restrict': {
@@ -181,12 +216,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutBestSellersLazyImport
       parentRoute: typeof LayoutImport
     }
-    '/_layout/login': {
-      preLoaderRoute: typeof LayoutLoginLazyImport
-      parentRoute: typeof LayoutImport
-    }
     '/_layout/products': {
       preLoaderRoute: typeof LayoutProductsLazyImport
+      parentRoute: typeof LayoutImport
+    }
+    '/_layout/register': {
+      preLoaderRoute: typeof LayoutRegisterLazyImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/': {
@@ -221,8 +256,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminAuthenticatedIndexImport
       parentRoute: typeof AdminAdminAuthenticatedImport
     }
+    '/_layout/_client/client/': {
+      preLoaderRoute: typeof LayoutClientClientIndexImport
+      parentRoute: typeof LayoutClientImport
+    }
     '/_admin/admin/_authenticated/products/new-product': {
       preLoaderRoute: typeof AdminAdminAuthenticatedProductsNewProductImport
+      parentRoute: typeof AdminAdminAuthenticatedImport
+    }
+    '/_admin/admin/_authenticated/clients/': {
+      preLoaderRoute: typeof AdminAdminAuthenticatedClientsIndexImport
       parentRoute: typeof AdminAdminAuthenticatedImport
     }
     '/_admin/admin/_authenticated/orders/': {
@@ -249,6 +292,7 @@ export const routeTree = rootRoute.addChildren([
         AdminAdminAuthenticatedUsersRoute,
         AdminAdminAuthenticatedIndexRoute,
         AdminAdminAuthenticatedProductsNewProductRoute,
+        AdminAdminAuthenticatedClientsIndexRoute,
         AdminAdminAuthenticatedOrdersIndexRoute,
         AdminAdminAuthenticatedProductsIndexRoute,
         AdminAdminAuthenticatedProductsProductIdRoute,
@@ -257,12 +301,14 @@ export const routeTree = rootRoute.addChildren([
     ]),
   ]),
   LayoutRoute.addChildren([
+    LayoutClientRoute.addChildren([LayoutClientClientIndexRoute]),
     LayoutCartRoute,
+    LayoutLoginRoute,
     LayoutRestrictRoute,
     LayoutAboutLazyRoute,
     LayoutBestSellersLazyRoute,
-    LayoutLoginLazyRoute,
     LayoutProductsLazyRoute,
+    LayoutRegisterLazyRoute,
     LayoutIndexRoute,
     LayoutProductProductIdRoute,
     LayoutSearchSearchLazyRoute,
