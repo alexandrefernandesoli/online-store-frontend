@@ -13,12 +13,10 @@ export const Route = createFileRoute("/_admin/admin/login")({
 
     if (user) {
       if ((location.search as { redirect: string }).redirect) {
-        console.log("has redirect");
         throw redirect({
           to: (location.search as { redirect: string }).redirect,
         });
       } else {
-				console.log("no redirect")
         throw redirect({
           to: "/admin",
         });

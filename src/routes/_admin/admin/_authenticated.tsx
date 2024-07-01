@@ -9,10 +9,7 @@ export const Route = createFileRoute("/_admin/admin/_authenticated")({
 
 		const user = await queryClient.fetchQuery(userDataQueryOptions)
 
-		console.log({ user });
-
 		if (!user) {
-			console.log('no user')
 			throw redirect({
 				to: "/admin/login",
 				search: {

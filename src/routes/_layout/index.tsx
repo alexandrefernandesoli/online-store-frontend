@@ -23,7 +23,7 @@ function Home() {
 				<CarouselContent className="w-full gap-0">
 					{Array.from({ length: 5 }).map((_, index) => (
 						<CarouselItem key={index} className="w-full">
-							<div className="min-h-[50vh] w-full bg-gray-500 text-white flex items-center justify-center text-5xl font-dosis">
+							<div className="min-h-72 w-full bg-gray-500 text-white flex items-center justify-center text-5xl font-dosis">
 								BANNER {index + 1}
 							</div>
 						</CarouselItem>
@@ -32,7 +32,7 @@ function Home() {
 				<CarouselNext className="absolute z-20 w-24 right-0 h-full bg-transparent border-0 hover:bg-transparent" />
 				<CarouselPrevious className="absolute z-20 w-24 h-full left-0 bg-transparent border-0 hover:bg-transparent" />
 			</Carousel>
-			<div className="px-12">
+			<div className="p-12">
 				<ProductGrid data={data} />
 			</div>
 		</>

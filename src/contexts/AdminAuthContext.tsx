@@ -33,8 +33,6 @@ const getUserData = async () => {
 
 		return data;
 	} catch(err) {
-		console.log(err);
-
 		return null;
 	}
 };
@@ -81,7 +79,6 @@ export function AdminAuthContextProvider({
 	});
 
 	useEffect(() => {
-		console.log("User changed", user);
 		router.invalidate();
 	}, [user, isLoading]);
 

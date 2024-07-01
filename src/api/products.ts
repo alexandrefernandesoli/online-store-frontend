@@ -100,8 +100,8 @@ export const editProduct = async (data: ProductForm & { id: number }) => {
 	return await axiosInstance.put<Product>(`/admin/products/${data.id}`, data);
 };
 
-export const deleteProduct = async (product_id: number) => {
-	return await axiosInstance.delete(`/admin/products/${product_id}`);
+export const deleteProduct = async (productId: number) => {
+	return await axiosInstance.delete(`/admin/products/${productId}`);
 };
 
 export const productsQueryOptions = (page: number) =>
@@ -111,10 +111,10 @@ export const productsQueryOptions = (page: number) =>
 		placeholderData: keepPreviousData,
 	});
 
-export const productQueryOptions = (product_id: number) =>
+export const productQueryOptions = (productId: number) =>
 	queryOptions({
-		queryKey: ["product", product_id],
-		queryFn: () => fetchProduct(product_id),
+		queryKey: ["product", productId],
+		queryFn: () => fetchProduct(productId),
 		placeholderData: keepPreviousData,
 	});
 

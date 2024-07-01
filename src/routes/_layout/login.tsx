@@ -2,9 +2,9 @@ import { clientDataQueryOptions } from "@/api/user";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link, createFileRoute, redirect } from "@tanstack/react-router";
+import { useMainContext } from "@/contexts/MainContext";
+import { Link, createFileRoute, redirect, useLocation, useRouter } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 
 export const Route = createFileRoute("/_layout/login")({
 	component: () => <Login />,
@@ -14,11 +14,11 @@ export const Route = createFileRoute("/_layout/login")({
     if (user) {
       if ((location.search as { redirect: string }).redirect) {
         throw redirect({
-          to: (location.search as { redirect: string }).redirect,
+          to: (location.search as { redirect: string }).redirect
         });
       } else {
         throw redirect({
-          to: "/client",
+          to: "/client"
         });
       }
     }
@@ -33,20 +33,22 @@ type LoginForm = {
 };
 
 function Login() {
+	const { handleClientLogin } = useMainContext();
 	const { handleSubmit, register } = useForm<LoginForm>();
+	const location = useLocation();
+	const router = useRouter();
 	
 	const handleLogin = async (data: LoginForm) => {
-		try {
-			const response =  await axios.post('http://localhost:8888/auth/login', {
-				usernameOrEmail: data.email,
-				password: data.password
-			});
+		const response = await handleClientLogin(data.email, data.password);
 
-			if (response.data.accessToken) {
-				console.log({ token: response.data.accessToken })
-				localStorage.setItem('clientToken', response.data.accessToken);
-			}
-		} catch (err) {
+		console.log({ response })
+
+		if (location.search) {
+			router.navigate({
+				to: (location.search as { redirect: string }).redirect
+			})
+		} else {
+			router.navigate({ to: '/client' });
 		}
 	}
 

@@ -1,29 +1,45 @@
+import { OrderCreation, createOrder } from '@/api/orders';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useMainContext } from '@/contexts/MainContext'
-import { createFileRoute } from '@tanstack/react-router'
+import { useMainContext } from '@/contexts/MainContext';
 import { formatMoney } from '@/lib/utils';
-import { OrderCreation, createOrder } from '@/api/orders';
+import { router } from '@/main';
+import { createFileRoute } from '@tanstack/react-router';
+import { Helmet } from 'react-helmet-async';
+import { toast } from 'sonner';
 
 export const Route = createFileRoute('/_layout/cart')({
   component: () => <Cart />
 })
 
 function Cart() {
-  const { shoppingCart, totalCartValue, setQuantity  } = useMainContext();
+  const { shoppingCart, totalCartValue, setQuantity, isUserLogged, cleanCart } = useMainContext();
 
   const handleCreateOrder = async () => {
     const order: OrderCreation = {
       products: shoppingCart.map(product => ({ productId: product.id, quantity: product.quantity }))
     }
 
-    const response = await createOrder(order);
+    if (!isUserLogged) {
+      router.navigate({
+        to: '/login',
+        search: { redirect: '/cart' }
+      })
+      return;
+    }
 
-    console.log({ response });
+    createOrder(order)
+
+    cleanCart()
+
+    toast.success('Pedido realizado com sucesso!')
   }
 
   return (
     <div className='flex flex-1 gap-2 px-8 py-8'>
+			<Helmet>
+				<title>Carrinho - Loja Online</title>
+			</Helmet>
       <div className='flex flex-col flex-1 divide-y border-t '>
         {shoppingCart.map((product) => (
           <div key={product.id} className='py-2 flex max-h-52 justify-between flex-1 gap-2'>

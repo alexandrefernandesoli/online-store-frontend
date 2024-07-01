@@ -1,22 +1,22 @@
 import { listOrdersQueryOptions } from "@/api/orders";
 import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { formatDate, formatMoney } from "@/lib/utils";
+import { router } from "@/main";
 import { useQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 
@@ -43,20 +43,15 @@ function Orders() {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-
-        <Button asChild>
-          <Link to={"/admin/products/new-product"}>Adicionar</Link>
-        </Button>
       </div>
 
-      <div className="bg-gray-100 rounded p-2">
+      <div className="bg-slate-50 rounded p-2">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
               <TableHead>Email do Cliente</TableHead>
-              <TableHead>Total</TableHead>
-              <TableHead>Produtos</TableHead>
+              <TableHead className="text-right">Total</TableHead>
               <TableHead>Adicionado em</TableHead>
               <TableHead>Atualizado em</TableHead>
             </TableRow>
@@ -75,11 +70,14 @@ function Orders() {
                 ))
               : data && data.length > 0
                 ? data.map((order, index) => (
-                    <TableRow key={`order-${order.id}-${index}`}>
+                    <TableRow key={`order-${order.id}-${index}`} onMouseDown={() => {
+                      router.navigate({
+                        to: `/admin/orders/${order.id}`,
+                      });
+                    }}>
                       <TableCell>{order.id}</TableCell>
-                      <TableCell>{order.clientEmail}</TableCell>
-                      <TableCell>{formatMoney(order.total)}</TableCell>
-                      <TableCell>{JSON.stringify(order.products)}</TableCell>
+                      <TableCell>{order.client.email}</TableCell>
+                      <TableCell className="text-right">{formatMoney(order.total)}</TableCell>
                       <TableCell>{formatDate(order.createdAt)}</TableCell>
                       <TableCell>{formatDate(order.updatedAt)}</TableCell>
                     </TableRow>

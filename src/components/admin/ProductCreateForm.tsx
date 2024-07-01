@@ -19,8 +19,6 @@ export function ProductCreateForm({ product }: { product?: any }) {
 	const imageURL = watch("imageURL");
 
 	const handleSubmitAdd = async (data: ProductForm) => {
-		console.log({	data })
-
 		if (product) {
 			await editMutation.mutateAsync({ ...data, id: product.id });
 		} else {
@@ -55,8 +53,6 @@ export function ProductCreateForm({ product }: { product?: any }) {
 	});
 
 	const numberOfRowsOnDescription = product?.description.split("\n").length + 3 || 1;
-
-	console.log({ numberOfRowsOnDescription })
 
 	return (
 		<form

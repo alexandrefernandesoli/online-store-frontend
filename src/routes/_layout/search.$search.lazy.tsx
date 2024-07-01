@@ -11,5 +11,7 @@ function Search() {
 	const { search } = Route.useParams();
 	const { data } = useQuery(productSearchQueryOptions(search));
 
-	return <ProductGrid data={data} />;
+	return <div className="p-12">
+		<ProductGrid data={data} />
+	</div>;
 }

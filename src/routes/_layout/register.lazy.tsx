@@ -24,16 +24,12 @@ function Register() {
 
 	const handleSignup = async (data: RegisterForm) => {
 		if (data.password !== data.passwordConfirm) {
-			console.log('As senhas não são iguais');
 			return;
 		}
 
 		try {
-			const response =  await axios.post('http://localhost:8888/public/signup', data);
-
-			console.log(response)
+			await axios.post('http://localhost:8888/public/signup', data);
 		} catch (err) {
-			console.log(err)
 		}
 	}
 

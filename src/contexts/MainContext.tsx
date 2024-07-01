@@ -1,16 +1,24 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { Product } from "../api/products";
+import { clientDataQueryOptions } from "@/api/user";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 type ProductWithQuantity = Product & { quantity: number };
 
-type MainContextType = {
+export type MainContextType = {
 	shoppingCart: ProductWithQuantity[];
 	totalCartValue: number;
 	totalCartItems: number;
 	addToCart: (product: Product) => void;
 	removeFromCart: (product: Product) => void;
 	removeAllFromCart: (product: Product) => void;
+	cleanCart: () => void;
 	setQuantity: (product: Product, quantity: number) => void;
+	isUserLogged: boolean;
+	user?: any;
+	revalidadeUser: () => void;
+	handleClientLogin: (user: string, password: string) => void;
 };
 
 const MainContext = createContext<MainContextType>({} as MainContextType);
@@ -20,6 +28,38 @@ export function MainContextProvider({
 }: {
 	children: React.ReactNode;
 }) {
+	const { data, refetch } = useQuery(clientDataQueryOptions);
+	const [user, setUser] = useState(data);
+
+	const revalidadeUser = () => {
+		refetch();
+	}
+
+	async function handleClientLogin(user: string, password: string) {
+		const response =  await axios.post('http://localhost:8888/auth/login', {
+			usernameOrEmail: user,
+			password: password
+		});
+
+		localStorage.setItem('clientToken', response.data.accessToken);
+
+		refetch();
+
+		return response.data;
+	}
+
+	const isUserLogged = user !== undefined && user !== null;
+
+	useEffect(() => {
+		setUser(data);
+	}, [data]);
+
+	useEffect(() => {
+		setInterval(() => {
+			revalidadeUser();
+		}, 5000)
+	}, [])
+
 	const [shoppingCart, setShoppingCart] = useState<ProductWithQuantity[]>(
 		[] as ProductWithQuantity[],
 	);
@@ -108,6 +148,10 @@ export function MainContextProvider({
 		0,
 	);
 
+	function cleanCart() {
+		setShoppingCart([]);
+	}
+
 	return (
 		<MainContext.Provider
 			value={{
@@ -118,6 +162,11 @@ export function MainContextProvider({
 				addToCart,
 				removeFromCart,
 				removeAllFromCart,
+				isUserLogged,
+				user,
+				revalidadeUser,
+				handleClientLogin,
+				cleanCart
 			}}
 		>
 			{children}

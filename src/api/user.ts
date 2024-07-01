@@ -4,9 +4,7 @@ import axios from "axios";
 
 const getUserData = async () => {
 	const token = localStorage.getItem("token");
-	console.log({ token });
 	if (!token) return null;
-
 
 	try {
 		const { data } = await axios.get(`${API_URL}/auth/info`, {
@@ -15,19 +13,24 @@ const getUserData = async () => {
 			},
 		});
 
-		console.log({ data })
+		if (!data) {
+			localStorage.removeItem("token");
+			return null;
+		}
+		
+		if (data.role !== "ADMIN") {
+			localStorage.removeItem("token");
+			return null;
+		}
 
 		return data;
 	} catch(err) {
-		console.log(err);
-
 		return null;
 	}
 };
 
-const getClientData = async () => {
+export const getClientData = async () => {
 	const token = localStorage.getItem("clientToken");
-	console.log({ clientToken: token });
 	if (!token) return null;
 
 	try {
@@ -37,12 +40,8 @@ const getClientData = async () => {
 			},
 		});
 
-		console.log({ data })
-
 		return data;
 	} catch(err) {
-		console.log(err);
-
 		return null;
 	}
 };

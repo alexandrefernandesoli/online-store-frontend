@@ -5,6 +5,7 @@ import "../globals.css";
 import { ShoppingCart } from "../components/ShoppingCart";
 import { useMainContext } from "../contexts/MainContext";
 import { router } from "../main";
+import { Helmet } from "react-helmet-async";
 
 export const Route = createFileRoute("/_layout")({
 	component: Layout,
@@ -16,7 +17,7 @@ type SearchForm = {
 
 function Layout() {
 	const { handleSubmit, register, setValue } = useForm<SearchForm>();
-	const { totalCartItems } = useMainContext();
+	const { totalCartItems, isUserLogged } = useMainContext();
 
 	const submitSearch = (data: SearchForm) => {
 		router.navigate({
@@ -26,11 +27,13 @@ function Layout() {
 			},
 		});
 		setValue("search", "");
-		console.log(data);
 	};
 
 	return (
 		<>
+			<Helmet>
+				<title>Loja Online</title>
+			</Helmet>
 			<header className="px-12 py-4 flex gap-12 items-center bg-gray-50 text-black">
 				<h1 className="font-dosis font-bold flex flex-1 text-4xl">
 					<Link to={"/"}>LOJA ONLINE</Link>
@@ -52,16 +55,16 @@ function Layout() {
 				</form>
 
 				<div className="font-dosis flex flex-1 gap-12 justify-center">
-					<Link to="/" className="font-semibold text-xl">
+					<Link to="/about" className="font-semibold text-xl">
 						SOBRE NÓS
 					</Link>
-					<Link to={"/products"} className="font-semibold text-xl">
+					<Link to={"/about"} className="font-semibold text-xl">
 						ATENDIMENTO
 					</Link>
 				</div>
 
 				<div className="flex">
-					<Link to={"/login"} className="mr-3">
+					<Link to={isUserLogged ? "/client" : "/login"} className="mr-3">
 						<i className="fas fa-user text-xl"></i>
 					</Link>
 

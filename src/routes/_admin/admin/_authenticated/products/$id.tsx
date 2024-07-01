@@ -4,7 +4,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Link, createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_admin/admin/_authenticated/products/product/$id')({
+export const Route = createFileRoute('/_admin/admin/_authenticated/products/$id')({
   loader: ({ context: { queryClient }, params: { id } }) => {
 		return queryClient.ensureQueryData(
 			productQueryOptions(Number.parseInt(id)),

@@ -102,7 +102,7 @@ function Products() {
                     <TableCell
                       onMouseDown={() => {
                         router.navigate({
-                          to: `/admin/products/product/${product.id}`,
+                          to: `/admin/products/${product.id}`,
                         });
                       }}
                     >

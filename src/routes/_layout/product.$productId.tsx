@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { productQueryOptions } from "../../api/products";
 import { Button } from "../../components/ui/button";
 import { useMainContext } from "../../contexts/MainContext";
+import { Helmet } from "react-helmet-async";
 
 export const Route = createFileRoute("/_layout/product/$productId")({
 	loader: ({ context: { queryClient }, params: { productId } }) => {
@@ -33,6 +34,9 @@ function Product() {
 
 	return (
 		<div className="bg-white">
+			<Helmet>
+				<title>{product?.name} - Loja Online</title>
+			</Helmet>
 			<div className="flex px-24 py-12 gap-12">
 				<img src={"/" + product?.imageURL} alt={product?.name} className="w-80 h-full" />
 				<div className="flex flex-col flex-1">

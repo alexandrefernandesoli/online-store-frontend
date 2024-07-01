@@ -44,7 +44,7 @@ function Clients() {
         </Breadcrumb>
       </div>
 
-      <div className="bg-gray-100 rounded p-2">
+      <div className="bg-slate-50 rounded p-2">
         <Table>
           <TableHeader>
             <TableRow>
@@ -68,7 +68,7 @@ function Clients() {
                   </TableRow>
                 ))
               : data && data.length > 0
-                ? data.map((client, index) => (
+                ? data?.map((client, index) => (
                     <TableRow key={`order-${client.id}-${index}`}>
                       <TableCell>{client.id}</TableCell>
                       <TableCell>
